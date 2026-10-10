@@ -14,7 +14,8 @@ int main(int argc, char *argv[])
 	/*
 	 * must be first call in the program
 	 */
-	Mem_Init(1000);
+	Mem_Init(4000);
+	printf("initial memory: %d\n", Mem_Available());
 
 	a1 = (char *)Mem_Alloc(128);
 	if(a1 == NULL)
@@ -26,6 +27,7 @@ int main(int argc, char *argv[])
 
 	printf("FREE LIST after malloc(128)\n");
 	Mem_Available();
+	Mem_Dump();
 
 	a2 = (char *)Mem_Alloc(32);
 	if(a2 == NULL)
@@ -38,11 +40,13 @@ int main(int argc, char *argv[])
 	printf("FREE LIST after malloc(32)\n");
 	Mem_Available();
 
+	Mem_Dump();
 
 	Mem_Free(a1);
 
 	printf("FREE LIST after free of first 128 malloc()\n");
 	Mem_Available();
+	Mem_Dump();
 
 	a3 = (char *)Mem_Alloc(104);
 	if(a3 == NULL)
@@ -53,9 +57,12 @@ int main(int argc, char *argv[])
 	}
 
 	printf("FREE LIST after malloc(104)\n");
+	// printf("current head: %p\n", head);
 	Mem_Available();
+	Mem_Dump();
 
 	a4 = (char *)Mem_Alloc(8);
+	printf("block being used at a4: %p\n", a4);
 	if(a4 == NULL)
 	{
 		fprintf(stderr,"call to MyMalloc(8) failed\n");
@@ -64,6 +71,7 @@ int main(int argc, char *argv[])
 	}
 	printf("FREE LIST after malloc(8)\n");
 	Mem_Available();
+	Mem_Dump();
 
 	/*
 	 * free it all -- notice that a1 is already free
@@ -73,6 +81,7 @@ int main(int argc, char *argv[])
 	Mem_Free(a4);
 	printf("FREE LIST after all free\n");
 	Mem_Available();
+	Mem_Dump();
 
 	return(0);
 }

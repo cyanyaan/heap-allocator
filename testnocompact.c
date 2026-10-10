@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 	void *ptr[10];
 	int i;
 
-	Mem_Init(1000);
+	Mem_Init(MAX_MALLOC_SIZE);
 
 	/*
 	 * try mallocing four pieces, each 1/4 of total size
@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
 	}
 
 	Mem_Available();
+	Mem_Dump();
 	printf("\n");
 
 	ptr[1] = Mem_Alloc(size);
@@ -40,6 +41,7 @@ int main(int argc, char *argv[])
 	}
 
 	Mem_Available();
+	Mem_Dump();
 	printf("\n");
 
 	ptr[2] = Mem_Alloc(size);
@@ -51,6 +53,7 @@ int main(int argc, char *argv[])
 	}
 
 	Mem_Available();
+	Mem_Dump();
 	printf("\n");
 
 	/*
@@ -64,6 +67,7 @@ int main(int argc, char *argv[])
 	}
 
 	Mem_Available();
+	Mem_Dump();
 	printf("\n");
 
 	/*
@@ -72,6 +76,7 @@ int main(int argc, char *argv[])
 	Mem_Free(ptr[0]);
 
 	Mem_Available();
+	Mem_Dump();
 	printf("\n");
 
 	/*
@@ -80,6 +85,7 @@ int main(int argc, char *argv[])
 	Mem_Free(ptr[2]);
 
 	Mem_Available();
+	Mem_Dump();
 	printf("\n");
 
 	/*
@@ -88,6 +94,7 @@ int main(int argc, char *argv[])
 	Mem_Free(ptr[1]);
 
 	Mem_Available();
+	Mem_Dump();
 	printf("\n");
 
 	/*
@@ -101,8 +108,8 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 	Mem_Available();
+	Mem_Dump();
 	printf("\n");
-
 	/*
 	 * try splitting the second block
 	 */
@@ -114,6 +121,7 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 	Mem_Available();
+	Mem_Dump();
 	printf("\n");
 
 	/*
@@ -123,6 +131,7 @@ int main(int argc, char *argv[])
 	Mem_Free(ptr[1]);
 
 	Mem_Available();
+	Mem_Dump();
 	printf("\n");
 
 	/*
@@ -137,6 +146,7 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 	Mem_Available();
+	Mem_Dump();
 	printf("\n");
 
 	/*
@@ -145,6 +155,7 @@ int main(int argc, char *argv[])
 	Mem_Free(ptr[0]);
 
 	Mem_Available();
+	Mem_Dump();
 	printf("\n");
 
 	/*
@@ -190,6 +201,7 @@ int main(int argc, char *argv[])
 	}
 
 	Mem_Available();
+	Mem_Dump();
 	printf("\n");
 
 	/*
@@ -232,6 +244,7 @@ int main(int argc, char *argv[])
 	}
 
 	Mem_Available();
+	Mem_Dump();
 	printf("\n");
 
 	/*
@@ -248,6 +261,7 @@ int main(int argc, char *argv[])
 		}
 	}
 	Mem_Available();
+	Mem_Dump();
 	printf("\n");
 
 	curr++;
@@ -261,6 +275,7 @@ int main(int argc, char *argv[])
 	}
 
 	Mem_Available();
+	Mem_Dump();
 	printf("\n");
 
 	printf("made it -- passed test\n");

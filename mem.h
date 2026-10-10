@@ -1,32 +1,29 @@
 #ifndef MEM_H
 #define MEM_H
+#define MAGIC 1234567
+// #define MAX_MALLOC_SIZE (1024*1024*16)
+#define MAX_MALLOC_SIZE 4096
 #include <sys/mman.h>
 #include <unistd.h>
-#include <err.h>
 #include <stdio.h>
-#include <assert.h>
+#include <stdbool.h>
 
-typedef struct __node_t{
-	struct __node_t *next;
-	int size;
-} node_t;
-
-typedef struct{
+typedef struct {
 	int size;
 	int magic;
-} header_t;
+	void *padding;
+}header_t;
 
-// union header {
-// 	struct{
-//
-// 	}
-// }
+typedef struct free_list{
+	int size;
+	struct free_list *next;
+} f_list;
 
-extern node_t* head;
+extern f_list* head;
 
 int Mem_Init(int sizeOfRegion);
 void* Mem_Alloc(int size);
-void Mem_Free(void* ptr);
+int Mem_Free(void *ptr);
 int Mem_Available();
 void Mem_Dump();
 
