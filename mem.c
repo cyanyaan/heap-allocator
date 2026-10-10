@@ -5,6 +5,7 @@ f_list* head = NULL;
 
 static f_list* get_free_chunk(int size, f_list** prev_node);
 static int _round(int sizeOfRegion);
+void mergeSort();
 // static f_list* coalesce();
 
 int Mem_Init(int sizeOfRegion){
@@ -141,3 +142,43 @@ static f_list* get_free_chunk(int size, f_list** prev_node){
 	}
 	return hptr;
 }
+
+// static f_list* split(f_list* head){
+//     f_list *fast = head;
+//     f_list *slow = head;
+
+//     while (fast != NULL && fast->next != NULL)
+//     {
+//         fast = fast->next->next;
+//         if (fast != NULL)
+//         {
+//             slow = slow->next;
+//         }
+//     }
+//     f_list *temp = slow->next;
+//     slow->next = NULL;
+
+//     return temp;
+// }
+
+// static f_list* merge(f_list *first, f_list *second){
+//     if(first == NULL) return second;
+//     if(second == NULL) return first;
+
+//     // if (first->)
+//     // {
+//     //     /* code */
+//     // }
+    
+
+// }
+
+// void mergeSort(){
+//     f_list **headptr = &head;
+
+//     while (*headptr != NULL)
+//     {
+//         printf("address of pointer: %p\n", *headptr); 
+//         (*headptr) = (*headptr)->next;
+//     }
+// } 
