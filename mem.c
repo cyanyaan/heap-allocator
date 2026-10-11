@@ -6,7 +6,6 @@ f_list* head = NULL;
 static f_list* get_free_chunk(int size, f_list** prev_node);
 static int _round(int sizeOfRegion);
 static inline f_list* list_comp(f_list *ptr, f_list **previous_node);
-static f_list* coalesce();
 
 int Mem_Init(int sizeOfRegion){
 	if ((sizeOfRegion <= 0) || (init_cnt != 0)) {
@@ -62,7 +61,7 @@ void *Mem_Alloc(int size){
     } else {
         header->size = size;
 
-        f_list *new_head =  (f_list*)(char*)free_chunk + size;
+        f_list *new_head =  (f_list*)((char*)free_chunk + size);
         new_head->size = freeChunk_size-size;
         new_head->next = next_chunk;
 
@@ -76,7 +75,37 @@ void *Mem_Alloc(int size){
     return (void*)(header+1);
 }
 
+void coalesce(f_list* freed, f_list *prev){
+    f_list* tmp = freed;
 
+    if ((((char*)tmp + tmp->size) == (char*)tmp->next)){
+        int total_size = (tmp->next == NULL) ? tmp->size : tmp->size + tmp->next->size; 
+
+        tmp->size = total_size;
+        tmp->next = tmp->next->next; 
+
+        if (prev == NULL) //tmp is head
+        {
+            // printf("adjacent new size: %d, new pos: %p\n", total_size, (char*)tmp+total_size);
+            head = tmp;
+        } else{
+            // printf("adjacent new size: %d, new pos: %p\n", total_size, (char*)tmp+total_size);
+            prev->next = tmp;
+        }
+
+        // printf("tmp: %p, prev: %p, next: %p\n", freed, prev, tmp->next);
+    }
+
+    if (prev != NULL && (((char*)prev+prev->size) == (char*)tmp))
+    {
+
+        // printf("adjacent prev: %p and tmp: %p\n", prev, tmp);
+        prev->next = tmp->next;
+        prev->size = tmp->size + prev->size;
+    }
+    
+
+}
 
 int Mem_Free(void *ptr){
     if (ptr == NULL)
@@ -96,19 +125,17 @@ int Mem_Free(void *ptr){
 
     f_list *previousNode = NULL;
     f_list *insertAt = list_comp(freed_chunk, &previousNode);
-    printf("insert at: %p, previous node: %p, freed chunk: %p\n", insertAt, previousNode, freed_chunk);
-    do
+    // printf("insert at: %p, previous node: %p, freed chunk: %p\n", insertAt, previousNode, freed_chunk);
+
+    freed_chunk->next = insertAt;
+    if (previousNode == NULL) //insert at head
     {
-        freed_chunk->next = insertAt;
-        if (previousNode == NULL) //insert at head
-        {
-            head = freed_chunk;    
-        } else{  //has a non empty previous node
-            previousNode->next = freed_chunk;
-        }
+        head = freed_chunk;
+    } else{  //has a non empty previous node
+        previousNode->next = freed_chunk;
+    }
+    coalesce(freed_chunk, previousNode);
         
-    } while (0);
-    
     return 0;
 }
 
@@ -122,7 +149,6 @@ int Mem_Available(){
 	int free_size = 0;
 	f_list *tmp = head;
 	while (tmp != NULL) {
-        
 		free_size = free_size + tmp->size;
 		tmp = tmp->next;
 	}
@@ -170,11 +196,9 @@ static inline f_list* list_comp(f_list *ptr, f_list **previous_node){
             *previous_node = prev;
             return tmp;
         }
-
         prev = tmp;
         tmp = tmp->next;
     }
-    
     
     return NULL;
 }
