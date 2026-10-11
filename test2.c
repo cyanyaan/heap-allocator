@@ -81,7 +81,6 @@ int main(int argc, char *argv[])
 	Mem_Free(a4);
 	printf("FREE LIST after all free\n");
 	Mem_Available();
-	mergeSort();
 	Mem_Dump();
 
 	return(0);

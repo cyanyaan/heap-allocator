@@ -26,6 +26,5 @@ void* Mem_Alloc(int size);
 int Mem_Free(void *ptr);
 int Mem_Available();
 void Mem_Dump();
-void mergeSort();
 
 #endif

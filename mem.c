@@ -5,8 +5,8 @@ f_list* head = NULL;
 
 static f_list* get_free_chunk(int size, f_list** prev_node);
 static int _round(int sizeOfRegion);
-void mergeSort();
-// static f_list* coalesce();
+static inline f_list* list_comp(f_list *ptr, f_list **previous_node);
+static f_list* coalesce();
 
 int Mem_Init(int sizeOfRegion){
 	if ((sizeOfRegion <= 0) || (init_cnt != 0)) {
@@ -76,6 +76,8 @@ void *Mem_Alloc(int size){
     return (void*)(header+1);
 }
 
+
+
 int Mem_Free(void *ptr){
     if (ptr == NULL)
     {
@@ -87,11 +89,26 @@ int Mem_Free(void *ptr){
         return -1;
     }
     hptr->magic = 0;
-    f_list* freed_chunk = (f_list*) hptr; 
-    freed_chunk->size = hptr->size;
-    freed_chunk->next = head;
-    head = freed_chunk;
 
+    f_list* freed_chunk = (f_list*) hptr; 
+    // printf("freed choooooooooooooooonk: %p\n", freed_chunk);
+    freed_chunk->size = hptr->size;
+
+    f_list *previousNode = NULL;
+    f_list *insertAt = list_comp(freed_chunk, &previousNode);
+    printf("insert at: %p, previous node: %p, freed chunk: %p\n", insertAt, previousNode, freed_chunk);
+    do
+    {
+        freed_chunk->next = insertAt;
+        if (previousNode == NULL) //insert at head
+        {
+            head = freed_chunk;    
+        } else{  //has a non empty previous node
+            previousNode->next = freed_chunk;
+        }
+        
+    } while (0);
+    
     return 0;
 }
 
@@ -143,42 +160,21 @@ static f_list* get_free_chunk(int size, f_list** prev_node){
 	return hptr;
 }
 
-// static f_list* split(f_list* head){
-//     f_list *fast = head;
-//     f_list *slow = head;
+static inline f_list* list_comp(f_list *ptr, f_list **previous_node){
+    f_list *tmp = head;
+    f_list *prev = NULL;
+    while (tmp != NULL)
+    {
+        if (tmp > ptr)
+        {
+            *previous_node = prev;
+            return tmp;
+        }
 
-//     while (fast != NULL && fast->next != NULL)
-//     {
-//         fast = fast->next->next;
-//         if (fast != NULL)
-//         {
-//             slow = slow->next;
-//         }
-//     }
-//     f_list *temp = slow->next;
-//     slow->next = NULL;
-
-//     return temp;
-// }
-
-// static f_list* merge(f_list *first, f_list *second){
-//     if(first == NULL) return second;
-//     if(second == NULL) return first;
-
-//     // if (first->)
-//     // {
-//     //     /* code */
-//     // }
+        prev = tmp;
+        tmp = tmp->next;
+    }
     
-
-// }
-
-// void mergeSort(){
-//     f_list **headptr = &head;
-
-//     while (*headptr != NULL)
-//     {
-//         printf("address of pointer: %p\n", *headptr); 
-//         (*headptr) = (*headptr)->next;
-//     }
-// } 
+    
+    return NULL;
+}
